@@ -1,0 +1,11 @@
+[Unit]
+Description=Forgejo Backup Service
+Wants=forgejo-server.service
+After=forgejo-server.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/projects/forgejo-iac/backup-forgejo.sh
+
+[Install]
+WantedBy=default.target

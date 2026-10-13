@@ -1,0 +1,23 @@
+[Unit]
+Description=Forgejo Main Server
+Requires=forgejo-db.service
+After=forgejo-db.service
+
+[Container]
+ContainerName=forgejo-server
+Image=codeberg.org/forgejo/forgejo:16
+EnvironmentFile=%h/projects/forgejo-iac/forgejo.env
+
+Volume=/srv/forgejo-data/data:/data:Z,U
+Volume=/etc/localtime:/etc/localtime:ro
+
+PublishPort=127.0.0.1:3001:3000
+PublishPort=127.0.0.1:2224:2222
+
+Network=forgejo-internal.network
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger Forgejo Backup Daily
+
+[Timer]
+OnCalendar=*-*-* 15:00:00
+Persistent=true
+RandomizedDelaySec=30min
+
+[Install]
+WantedBy=timers.target
