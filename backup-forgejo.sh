@@ -48,4 +48,4 @@ MSG="Backup completed and saved to $BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
 base_log_ok "$MSG"
 
 source "$HOME/projects/notify-sh-lib/lib/email.sh"
-email_send "genre-grunt-dander@duck.com" "Systemd notify - forgejo backup" "$MSG" 
+email_send "genre-grunt-dander@duck.com" "systemd notify - forgejo backup" "$MSG" 
