@@ -26,20 +26,26 @@ fi
 base_log_step "Run backup and rotation."
 
 base_log_info "Create target directory inside container"
-podman exec forgejo-server mkdir -p "$INNER_BACKUP_DIR"
+podman exec -u git forgejo-server mkdir -p "$INNER_BACKUP_DIR"
+podman exec -u root forgejo-server chown git:git "$INNER_BACKUP_DIR"
 
 base_log_info "Create backup (DB + repos + LFS + attachments)"
-podman exec forgejo-server forgejo dump -c "$APP_INI" --file "$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
+podman exec -u git forgejo-server forgejo dump -c "$APP_INI" --file "$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
 
 base_log_info "Copy to host"
 podman cp "forgejo-server:$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip" "$BACKUP_DIR/"
 
 base_log_warn "Remove from container to avoid disk bloat"
-podman exec forgejo-server rm -f "$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
+podman exec -u git forgejo-server rm -f "$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
 
 base_log_info "Rotation on host: keep only N latest"
 find "$BACKUP_DIR" -type f -name "forgejo-backup-*.zip" -printf '%T@ %p\n' \
     | sort -rn | tail -n +$((KEEP + 1)) | cut -d' ' -f2- \
     | xargs -r rm -f
 
-base_log_ok "Backup saved to $BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
+MSG="Backup completed and saved to $BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
+
+base_log_ok "$MSG"
+
+source "$HOME/projects/notify-sh-lib/lib/email.sh"
+email_send "genre-grunt-dander@duck.com" "Systemd notify - forgejo backup" "$MSG" 
