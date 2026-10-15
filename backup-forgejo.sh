@@ -26,8 +26,10 @@ fi
 base_log_step "Run backup and rotation."
 
 base_log_info "Create target directory inside container"
-podman exec -u git forgejo-server mkdir -p "$INNER_BACKUP_DIR"
+podman exec -u root forgejo-server mkdir -p "$INNER_BACKUP_DIR"
 podman exec -u root forgejo-server chown git:git "$INNER_BACKUP_DIR"
+podman exec -u root forgejo-server chmod 755 "$INNER_BACKUP_DIR"
+podman exec -u root forgejo-server chmod 755 /data
 
 base_log_info "Create backup (DB + repos + LFS + attachments)"
 podman exec -u git forgejo-server forgejo dump -c "$APP_INI" --file "$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
