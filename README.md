@@ -31,7 +31,7 @@ systemctl --user restart forgejo-server.service
 Create admin:
 
 ```bash
-podman exec -u git -it forgejo-server forgejo admin user create \
+podman exec -u git forgejo-server forgejo admin user create \
   --admin \
   --username your_login \
   --password "your_password" \
