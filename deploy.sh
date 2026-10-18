@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PODMAN_SH_LIB="$HOME/projects/podman-sh-lib"
-source "$PODMAN_SH_LIB/lib/podman.sh"
+source "$HOME/projects/podman-sh-lib/lib/podman.sh"
 
 QUADLET_DIR="$HOME/.config/containers/systemd"
 USER_UNIT_DIR="$HOME/.config/systemd/user"

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PODMAN_SH_LIB="$HOME/projects/podman-sh-lib"
-source "$PODMAN_SH_LIB/lib/podman.sh"
+source "$HOME/projects/podman-sh-lib/lib/podman.sh"
 
 BACKUP_DIR="/srv/forgejo-data/backups"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -36,6 +35,8 @@ podman exec -u git forgejo-server forgejo dump -c "$APP_INI" --file "$INNER_BACK
 
 base_log_info "Copy to host"
 podman cp "forgejo-server:$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip" "$BACKUP_DIR/"
+
+podman_marker_set "$BACKUP_DIR/.last-dump-is-ok"
 
 base_log_warn "Remove from container to avoid disk bloat"
 podman exec -u git forgejo-server rm -f "$INNER_BACKUP_DIR/forgejo-backup-$TIMESTAMP.zip"
